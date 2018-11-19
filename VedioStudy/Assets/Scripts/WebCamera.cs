@@ -11,8 +11,7 @@ public class WebCamera : MonoBehaviour
 
     //接收返回的图片数据  
     WebCamTexture _webCamera;
-    protected Texture2D _texture;
-    public SpriteRenderer _webRenderer;//作为显示摄像头的面板
+    public Renderer _webRenderer;//作为显示摄像头的面板
 
 
     void OnGUI()
@@ -76,14 +75,6 @@ public class WebCamera : MonoBehaviour
                 if (null != _webRenderer)
                 {
                     _webRenderer.material.mainTexture = _webCamera;
-                    _texture = new Texture2D((int)CameraSize.x, (int)CameraSize.y, TextureFormat.RGB24, true);
-                    _webRenderer.sprite = Sprite.Create(_texture, new Rect
-                    {
-                        x = 0.0f,
-                        y = 0.0f,
-                        width = CameraSize.x / 200.0f,
-                        height = CameraSize.y / 200.0f,
-                    },new Vector2(0.50f,0.50f));
                     //_webRenderer.transform.localScale = Vector3.one;
                 }
 
