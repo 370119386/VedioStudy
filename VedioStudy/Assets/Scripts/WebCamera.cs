@@ -71,7 +71,7 @@ public class WebCamera : MonoBehaviour
             for (int i = 0; i < WebCamTexture.devices.Length; i++)
             {
                 // We want the back camera
-                if (!WebCamTexture.devices[i].isFrontFacing)
+                //if (!WebCamTexture.devices[i].isFrontFacing)
                 {
                     //webCameraTexture = new WebCamTexture(cameraIndex, Screen.width, Screen.height);
                     _webCamera = new WebCamTexture(i, 200, 200);
