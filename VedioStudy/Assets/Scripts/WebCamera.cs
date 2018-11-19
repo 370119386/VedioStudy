@@ -11,8 +11,7 @@ public class WebCamera : MonoBehaviour
 
     //接收返回的图片数据  
     WebCamTexture _webCamera;
-    public Renderer _webRenderer;//作为显示摄像头的面板
-
+    public GUITexture _guiTexture;
 
     void OnGUI()
     {
@@ -24,7 +23,7 @@ public class WebCamera : MonoBehaviour
         //添加一个按钮来控制摄像机的开和关
         if (GUI.Button(new Rect(100, 250, 100, 100), "ON/OFF"))
         {
-            if (null != _webCamera && null != _webRenderer)
+            if (null != _webCamera && null != _guiTexture)
             {
                 if (_webCamera.isPlaying)
                     StopCamera();
@@ -42,8 +41,8 @@ public class WebCamera : MonoBehaviour
 
     public void PlayCamera()
     {
-        if (null != _webRenderer)
-            _webRenderer.enabled = true;
+        if (null != _guiTexture)
+            _guiTexture.enabled = true;
         if (null != _webCamera)
             _webCamera.Play();
     }
@@ -51,8 +50,8 @@ public class WebCamera : MonoBehaviour
 
     public void StopCamera()
     {
-        if (null != _webRenderer)
-            _webRenderer.enabled = false;
+        if (null != _guiTexture)
+            _guiTexture.enabled = false;
         if (null != _webCamera)
             _webCamera.Stop();
     }
@@ -67,19 +66,40 @@ public class WebCamera : MonoBehaviour
         if (Application.HasUserAuthorization(UserAuthorization.WebCam))
         {
             WebCamDevice[] devices = WebCamTexture.devices;
-            if(devices.Length > 0)
+
+            // Checks how many and which cameras are available on the device
+            for (int i = 0; i < WebCamTexture.devices.Length; i++)
             {
-                DeviceName = devices[0].name;
-                _webCamera = new WebCamTexture(DeviceName, (int)CameraSize.x, (int)CameraSize.y, (int)CameraFPS);
-
-                if (null != _webRenderer)
+                // We want the back camera
+                if (!WebCamTexture.devices[i].isFrontFacing)
                 {
-                    _webRenderer.material.mainTexture = _webCamera;
-                    //_webRenderer.transform.localScale = Vector3.one;
-                }
+                    //webCameraTexture = new WebCamTexture(cameraIndex, Screen.width, Screen.height);
+                    _webCamera = new WebCamTexture(i, 200, 200);
 
-                _webCamera.Play();
+                    // Here we flip the GuiTexture by applying a localScale transformation
+                    // works only in Landscape mode
+                    _guiTexture.transform.localScale = new Vector3(1, 1, 1);
+
+                    _guiTexture.texture = _webCamera;
+
+                    _webCamera.Play();
+                    break;
+                }
             }
+
+            //if (devices.Length > 0)
+            //{
+            //    DeviceName = devices[0].name;
+            //    _webCamera = new WebCamTexture(DeviceName, (int)CameraSize.x, (int)CameraSize.y, (int)CameraFPS);
+
+            //    if (null != _webRenderer)
+            //    {
+            //        _webRenderer.material.mainTexture = _webCamera;
+            //        //_webRenderer.transform.localScale = Vector3.one;
+            //    }
+
+            //    _webCamera.Play();
+            //}
         }
     }
 }
