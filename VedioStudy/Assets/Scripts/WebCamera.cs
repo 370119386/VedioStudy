@@ -75,7 +75,7 @@ public class WebCamera : MonoBehaviour
                 if (null != _webRenderer)
                 {
                     _webRenderer.material.mainTexture = _webCamera;
-                    _webRenderer.transform.localScale = Vector3.one;
+                    //_webRenderer.transform.localScale = Vector3.one;
                 }
 
                 _webCamera.Play();
