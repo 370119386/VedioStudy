@@ -74,7 +74,7 @@ public class WebCamera : MonoBehaviour
                 //if (!WebCamTexture.devices[i].isFrontFacing)
                 {
                     //webCameraTexture = new WebCamTexture(cameraIndex, Screen.width, Screen.height);
-                    _webCamera = new WebCamTexture(i, 200, 200);
+                    _webCamera = new WebCamTexture(WebCamTexture.devices[i].name, (int)CameraSize.x, (int)CameraSize.y);
 
                     // Here we flip the GuiTexture by applying a localScale transformation
                     // works only in Landscape mode
