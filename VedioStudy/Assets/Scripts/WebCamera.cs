@@ -18,7 +18,7 @@ public class WebCamera : MonoBehaviour
 
     private void Start()
     {
-        //mCachedTexture = new Texture2D(webTextureWidth, webTextureHeight, TextureFormat.RGBA32, false);
+        mCachedTexture = new Texture2D(webTextureWidth, webTextureHeight, TextureFormat.RGBA32, false);
     }
 
     void OnGUI()
@@ -140,12 +140,8 @@ public class WebCamera : MonoBehaviour
     public void getScreenShot()
     {
         var begin = System.DateTime.Now.Ticks;
-        if(null == mCachedTexture)
-        {
-            mCachedTexture = new Texture2D(_webCamera.width, _webCamera.height,TextureFormat.RGBA32,false);
-        }
         Debug.LogFormat("w={0} h={1}", _webCamera.width, _webCamera.height);
-        mCachedTexture.SetPixels32(_webCamera.GetPixels32());
+        mCachedTexture.SetPixels(_webCamera.GetPixels(_webCamera.width / 2 - webTextureWidth / 2, _webCamera.height / 2 - webTextureHeight / 2, webTextureWidth, webTextureHeight));
         var end = System.DateTime.Now.Ticks;
         Debug.LogErrorFormat("SetPixels32 cost[<color=#00ff00>{0:F2}</color>]ms", (end - begin) * 0.0001f);
         begin = System.DateTime.Now.Ticks;
