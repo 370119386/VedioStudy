@@ -150,8 +150,8 @@ public class WebCamera : MonoBehaviour
             System.IO.Directory.CreateDirectory(dir);
         }
         var path = dir + Time.time.ToString().Split('.')[0] + "_" + Time.time.ToString().Split('.')[1] + ".png";
-        System.IO.File.WriteAllBytes(path, byt);
         var end = System.DateTime.Now.Ticks;
-        Debug.LogErrorFormat("get screen succeed ... path = <color=#00ff00>{0}</color> cost[<color=#00ff00>{1:F2}</color>]ms", path,(end - begin)*0.0001f);
+        Debug.LogErrorFormat("get screen succeed ... path = <color=#00ff00>{0}</color> cost[<color=#00ff00>{1:F2}</color>]ms", path, (end - begin) * 0.0001f);
+        System.IO.File.WriteAllBytes(path, byt);
     }
 }
