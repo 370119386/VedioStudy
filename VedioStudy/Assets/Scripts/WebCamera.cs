@@ -141,6 +141,9 @@ public class WebCamera : MonoBehaviour
     {
         var begin = System.DateTime.Now.Ticks;
         mCachedTexture.SetPixels32(_webCamera.GetPixels32());
+        var end = System.DateTime.Now.Ticks;
+        Debug.LogErrorFormat("SetPixels32 cost[<color=#00ff00>{0:F2}</color>]ms", (end - begin) * 0.0001f);
+        begin = System.DateTime.Now.Ticks;
         //mCachedTexture.ReadPixels(new Rect(Screen.width / 2 - webTextureWidth / 2, Screen.height / 2 - webTextureHeight / 2, webTextureWidth, webTextureHeight),0,0,false);
         //mCachedTexture.Apply();
         //print(mCachedTexture);
@@ -151,7 +154,7 @@ public class WebCamera : MonoBehaviour
             System.IO.Directory.CreateDirectory(dir);
         }
         var path = dir + Time.time.ToString().Split('.')[0] + "_" + Time.time.ToString().Split('.')[1] + ".png";
-        var end = System.DateTime.Now.Ticks;
+        end = System.DateTime.Now.Ticks;
         Debug.LogErrorFormat("get screen succeed ... path = <color=#00ff00>{0}</color> cost[<color=#00ff00>{1:F2}</color>]ms", path, (end - begin) * 0.0001f);
         System.IO.File.WriteAllBytes(path, byt);
     }
