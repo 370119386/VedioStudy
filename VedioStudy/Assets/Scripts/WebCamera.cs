@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class WebCameraData
+{
+    public byte[] datas;
+}
+
 public class WebCamera : MonoBehaviour
 {
 
@@ -101,39 +106,6 @@ public class WebCamera : MonoBehaviour
                     break;
                 }
             }
-
-            //if (devices.Length > 0)
-            //{
-            //    DeviceName = devices[0].name;
-            //    _webCamera = new WebCamTexture(DeviceName, (int)CameraSize.x, (int)CameraSize.y, (int)CameraFPS);
-
-            //    if (null != _webRenderer)
-            //    {
-            //        _webRenderer.material.mainTexture = _webCamera;
-            //        //_webRenderer.transform.localScale = Vector3.one;
-            //    }
-
-            //    _webCamera.Play();
-            //}
-        }
-    }
-
-    /// <summary>
-	/// 连续捕获照片
-	/// </summary>
-	/// <returns>The photoes.</returns>
-	public IEnumerator SeriousPhotoes()
-    {
-        while (true)
-        {
-            yield return new WaitForEndOfFrame();
-            Texture2D t = new Texture2D(webTextureWidth, webTextureHeight, TextureFormat.RGB24, true);
-            t.ReadPixels(new Rect(Screen.width / 2 - 180, Screen.height / 2 - 50, 360, 300), 0, 0, false);
-            t.Apply();
-            print(t);
-            byte[] byt = t.EncodeToPNG();
-            //			File.WriteAllBytes(Application.dataPath + "/MulPhotoes/" + Time.time.ToString().Split('.')[0] + "_" + Time.time.ToString().Split('.')[1] + ".png", byt);
-            //Thread.Sleep(300);
         }
     }
 
@@ -145,10 +117,7 @@ public class WebCamera : MonoBehaviour
         var end = System.DateTime.Now.Ticks;
         Debug.LogErrorFormat("SetPixels32 cost[<color=#00ff00>{0:F2}</color>]ms", (end - begin) * 0.0001f);
         begin = System.DateTime.Now.Ticks;
-        //mCachedTexture.ReadPixels(new Rect(Screen.width / 2 - webTextureWidth / 2, Screen.height / 2 - webTextureHeight / 2, webTextureWidth, webTextureHeight),0,0,false);
-        //mCachedTexture.Apply();
-        //print(mCachedTexture);
-        byte[] byt = mCachedTexture.EncodeToPNG();
+        byte[] pngDatas = mCachedTexture.EncodeToPNG();
         var dir = Application.dataPath + "/ScreenShot/";
         if(!System.IO.Directory.Exists(dir))
         {
@@ -156,7 +125,41 @@ public class WebCamera : MonoBehaviour
         }
         var path = dir + Time.time.ToString().Split('.')[0] + "_" + Time.time.ToString().Split('.')[1] + ".png";
         end = System.DateTime.Now.Ticks;
-        Debug.LogErrorFormat("get screen succeed ... path = <color=#00ff00>{0}</color> cost[<color=#00ff00>{1:F2}</color>]ms", path, (end - begin) * 0.0001f);
-        System.IO.File.WriteAllBytes(path, byt);
+        Debug.LogErrorFormat("get screen succeed ... path = <color=#00ff00>{0}</color> cost[<color=#00ff00>{1:F2}</color>]ms length = <color=#00ff00>{2}</color> bytes", path, (end - begin) * 0.0001f, pngDatas.Length);
+
+        begin = System.DateTime.Now.Ticks;
+        var compressDatas = XZip.CompressZip(pngDatas);
+        end = System.DateTime.Now.Ticks;
+
+        Debug.LogErrorFormat("compressed length = <color=#00ff00>[{0}]:[{1:F2}]</color> bytes", compressDatas.Length, (end - begin) * 0.0001f);
+        var uncompressDatas = XZip.DecompressZip(compressDatas);
+
+        bool check = true;
+        if(uncompressDatas.Length != pngDatas.Length)
+        {
+            check = false;
+        }
+        else
+        {
+            for (int i = 0; i < uncompressDatas.Length; ++i)
+            {
+                if (uncompressDatas[i] != pngDatas[i])
+                {
+                    check = false;
+                    break;
+                }
+            }
+        }
+        if(check)
+        {
+            Debug.LogFormat("check succeed ...");
+        }
+        else
+        {
+            Debug.LogFormat("check failed ...");
+        }
+        //System.IO.File.WriteAllBytes(path, byt);
     }
+
+
 }
